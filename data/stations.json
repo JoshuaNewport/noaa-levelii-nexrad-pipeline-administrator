@@ -1,0 +1,892 @@
+{
+  "stations": [
+    {
+      "code": "KBMX",
+      "name": "Birmingham, AL",
+      "lat": 33.172,
+      "lon": -86.77
+    },
+    {
+      "code": "KEOX",
+      "name": "Fort Rucker, AL",
+      "lat": 31.46,
+      "lon": -85.459
+    },
+    {
+      "code": "KGWX",
+      "name": "Columbus AFB, MS",
+      "lat": 33.897,
+      "lon": -88.329
+    },
+    {
+      "code": "KHTX",
+      "name": "Huntsville, AL",
+      "lat": 34.931,
+      "lon": -86.083
+    },
+    {
+      "code": "KMOB",
+      "name": "Mobile, AL",
+      "lat": 30.679,
+      "lon": -88.24
+    },
+    {
+      "code": "KMXX",
+      "name": "Maxwell AFB, AL",
+      "lat": 32.537,
+      "lon": -85.79
+    },
+    {
+      "code": "PAHG",
+      "name": "Kenai, AK",
+      "lat": 60.726,
+      "lon": -151.351
+    },
+    {
+      "code": "PAIH",
+      "name": "Middleton Island, AK",
+      "lat": 59.462,
+      "lon": -146.301
+    },
+    {
+      "code": "PAKC",
+      "name": "King Salmon, AK",
+      "lat": 58.679,
+      "lon": -156.629
+    },
+    {
+      "code": "PAPD",
+      "name": "Fairbanks, AK",
+      "lat": 65.035,
+      "lon": -147.502
+    },
+    {
+      "code": "KEMX",
+      "name": "Tucson, AZ",
+      "lat": 31.894,
+      "lon": -110.63
+    },
+    {
+      "code": "KFSX",
+      "name": "Flagstaff, AZ",
+      "lat": 34.574,
+      "lon": -111.198
+    },
+    {
+      "code": "KIWA",
+      "name": "Phoenix, AZ",
+      "lat": 33.289,
+      "lon": -111.67
+    },
+    {
+      "code": "KYUX",
+      "name": "Yuma, AZ",
+      "lat": 32.495,
+      "lon": -114.656
+    },
+    {
+      "code": "KLZK",
+      "name": "Little Rock, AR",
+      "lat": 34.836,
+      "lon": -92.262
+    },
+    {
+      "code": "KSRX",
+      "name": "Fort Smith, AR",
+      "lat": 35.29,
+      "lon": -94.362
+    },
+    {
+      "code": "KBBX",
+      "name": "Beale AFB, CA",
+      "lat": 39.496,
+      "lon": -121.632
+    },
+    {
+      "code": "KEYX",
+      "name": "Edwards AFB, CA",
+      "lat": 35.098,
+      "lon": -117.561
+    },
+    {
+      "code": "KHNX",
+      "name": "San Joaquin Valley, CA",
+      "lat": 36.314,
+      "lon": -119.632
+    },
+    {
+      "code": "KMUX",
+      "name": "San Francisco, CA",
+      "lat": 37.155,
+      "lon": -121.898
+    },
+    {
+      "code": "KNKX",
+      "name": "San Diego, CA",
+      "lat": 32.919,
+      "lon": -117.042
+    },
+    {
+      "code": "KSOX",
+      "name": "Santa Ana Mountains, CA",
+      "lat": 33.818,
+      "lon": -117.636
+    },
+    {
+      "code": "KVBX",
+      "name": "Vandenberg AFB, CA",
+      "lat": 34.838,
+      "lon": -120.397
+    },
+    {
+      "code": "KVTX",
+      "name": "Los Angeles, CA",
+      "lat": 34.412,
+      "lon": -119.179
+    },
+    {
+      "code": "KDAX",
+      "name": "Sacramento, CA",
+      "lat": 38.501,
+      "lon": -121.678
+    },
+    {
+      "code": "KFTG",
+      "name": "Denver, CO",
+      "lat": 39.787,
+      "lon": -104.546
+    },
+    {
+      "code": "KGJX",
+      "name": "Grand Junction, CO",
+      "lat": 39.062,
+      "lon": -108.214
+    },
+    {
+      "code": "KPUX",
+      "name": "Pueblo, CO",
+      "lat": 38.459,
+      "lon": -104.181
+    },
+    {
+      "code": "KAMX",
+      "name": "Miami, FL",
+      "lat": 25.611,
+      "lon": -80.413
+    },
+    {
+      "code": "KBYX",
+      "name": "Key West, FL",
+      "lat": 24.597,
+      "lon": -81.703
+    },
+    {
+      "code": "KEVX",
+      "name": "Eglin AFB, FL",
+      "lat": 30.564,
+      "lon": -85.922
+    },
+    {
+      "code": "KJAX",
+      "name": "Jacksonville, FL",
+      "lat": 30.485,
+      "lon": -81.702
+    },
+    {
+      "code": "KJGX",
+      "name": "Robins AFB, GA",
+      "lat": 32.675,
+      "lon": -83.351
+    },
+    {
+      "code": "KMLB",
+      "name": "Melbourne, FL",
+      "lat": 28.113,
+      "lon": -80.654
+    },
+    {
+      "code": "KTBW",
+      "name": "Tampa, FL",
+      "lat": 27.706,
+      "lon": -82.402
+    },
+    {
+      "code": "KTLH",
+      "name": "Tallahassee, FL",
+      "lat": 30.398,
+      "lon": -84.329
+    },
+    {
+      "code": "KFFC",
+      "name": "Atlanta, GA",
+      "lat": 33.363,
+      "lon": -84.566
+    },
+    {
+      "code": "KVAX",
+      "name": "Moody AFB, GA",
+      "lat": 30.89,
+      "lon": -83.002
+    },
+    {
+      "code": "PGUA",
+      "name": "Andersen AFB, Guam",
+      "lat": 13.454,
+      "lon": 144.808
+    },
+    {
+      "code": "PHKI",
+      "name": "Kauai, HI",
+      "lat": 21.894,
+      "lon": -159.552
+    },
+    {
+      "code": "PHKM",
+      "name": "Kohala, HI",
+      "lat": 20.125,
+      "lon": -155.778
+    },
+    {
+      "code": "PHMO",
+      "name": "Molokai, HI",
+      "lat": 21.133,
+      "lon": -157.18
+    },
+    {
+      "code": "PHWA",
+      "name": "Hawaii, HI",
+      "lat": 19.095,
+      "lon": -155.569
+    },
+    {
+      "code": "KCBX",
+      "name": "Boise, ID",
+      "lat": 43.491,
+      "lon": -116.236
+    },
+    {
+      "code": "KSFX",
+      "name": "Pocatello, ID",
+      "lat": 43.106,
+      "lon": -112.686
+    },
+    {
+      "code": "KILX",
+      "name": "Lincoln, IL",
+      "lat": 40.151,
+      "lon": -89.337
+    },
+    {
+      "code": "KLOT",
+      "name": "Chicago, IL",
+      "lat": 41.604,
+      "lon": -88.085
+    },
+    {
+      "code": "KIWX",
+      "name": "Fort Wayne, IN",
+      "lat": 41.359,
+      "lon": -85.7
+    },
+    {
+      "code": "KVWX",
+      "name": "Evansville, IN",
+      "lat": 38.26,
+      "lon": -87.725
+    },
+    {
+      "code": "KIND",
+      "name": "Indianapolis, IN",
+      "lat": 39.707,
+      "lon": -86.28
+    },
+    {
+      "code": "KDMX",
+      "name": "Des Moines, IA",
+      "lat": 41.731,
+      "lon": -93.723
+    },
+    {
+      "code": "KDVN",
+      "name": "Davenport, IA",
+      "lat": 41.612,
+      "lon": -90.581
+    },
+    {
+      "code": "KDDC",
+      "name": "Dodge City, KS",
+      "lat": 37.761,
+      "lon": -99.969
+    },
+    {
+      "code": "KGLD",
+      "name": "Goodland, KS",
+      "lat": 39.367,
+      "lon": -101.7
+    },
+    {
+      "code": "KICT",
+      "name": "Wichita, KS",
+      "lat": 37.654,
+      "lon": -97.443
+    },
+    {
+      "code": "KTWX",
+      "name": "Topeka, KS",
+      "lat": 38.997,
+      "lon": -96.232
+    },
+    {
+      "code": "KHPX",
+      "name": "Fort Campbell, KY",
+      "lat": 36.737,
+      "lon": -87.285
+    },
+    {
+      "code": "KJKL",
+      "name": "Jackson, KY",
+      "lat": 37.591,
+      "lon": -83.313
+    },
+    {
+      "code": "KLVX",
+      "name": "Louisville, KY",
+      "lat": 37.975,
+      "lon": -85.944
+    },
+    {
+      "code": "KPAH",
+      "name": "Paducah, KY",
+      "lat": 37.068,
+      "lon": -88.772
+    },
+    {
+      "code": "KLCH",
+      "name": "Lake Charles, LA",
+      "lat": 30.125,
+      "lon": -93.216
+    },
+    {
+      "code": "KLIX",
+      "name": "New Orleans, LA",
+      "lat": 30.337,
+      "lon": -89.825
+    },
+    {
+      "code": "KPOE",
+      "name": "Fort Polk, LA",
+      "lat": 31.156,
+      "lon": -92.976
+    },
+    {
+      "code": "KSHV",
+      "name": "Shreveport, LA",
+      "lat": 32.451,
+      "lon": -93.841
+    },
+    {
+      "code": "KCBW",
+      "name": "Caribou, ME",
+      "lat": 46.039,
+      "lon": -67.806
+    },
+    {
+      "code": "KGYX",
+      "name": "Portland, ME",
+      "lat": 43.891,
+      "lon": -70.257
+    },
+    {
+      "code": "KLWX",
+      "name": "Sterling, VA",
+      "lat": 38.975,
+      "lon": -77.478
+    },
+    {
+      "code": "KBOX",
+      "name": "Boston, MA",
+      "lat": 41.956,
+      "lon": -71.137
+    },
+    {
+      "code": "KAPX",
+      "name": "Gaylord, MI",
+      "lat": 44.907,
+      "lon": -84.72
+    },
+    {
+      "code": "KDTX",
+      "name": "Detroit, MI",
+      "lat": 42.7,
+      "lon": -83.472
+    },
+    {
+      "code": "KGRR",
+      "name": "Grand Rapids, MI",
+      "lat": 42.894,
+      "lon": -85.545
+    },
+    {
+      "code": "KMQT",
+      "name": "Marquette, MI",
+      "lat": 46.531,
+      "lon": -87.548
+    },
+    {
+      "code": "KDLH",
+      "name": "Duluth, MN",
+      "lat": 46.837,
+      "lon": -92.21
+    },
+    {
+      "code": "KMPX",
+      "name": "Minneapolis, MN",
+      "lat": 44.849,
+      "lon": -93.565
+    },
+    {
+      "code": "KDGX",
+      "name": "Jackson, MS",
+      "lat": 32.28,
+      "lon": -89.984
+    },
+    {
+      "code": "KEAX",
+      "name": "Kansas City, MO",
+      "lat": 38.81,
+      "lon": -94.264
+    },
+    {
+      "code": "KLSX",
+      "name": "St. Louis, MO",
+      "lat": 38.699,
+      "lon": -90.683
+    },
+    {
+      "code": "KSGF",
+      "name": "Springfield, MO",
+      "lat": 37.235,
+      "lon": -93.4
+    },
+    {
+      "code": "KBLX",
+      "name": "Billings, MT",
+      "lat": 45.854,
+      "lon": -108.607
+    },
+    {
+      "code": "KGGW",
+      "name": "Glasgow, MT",
+      "lat": 48.206,
+      "lon": -106.625
+    },
+    {
+      "code": "KTFX",
+      "name": "Great Falls, MT",
+      "lat": 47.46,
+      "lon": -111.385
+    },
+    {
+      "code": "KMSX",
+      "name": "Missoula, MT",
+      "lat": 47.041,
+      "lon": -113.986
+    },
+    {
+      "code": "KLNX",
+      "name": "North Platte, NE",
+      "lat": 41.958,
+      "lon": -100.576
+    },
+    {
+      "code": "KOAX",
+      "name": "Omaha, NE",
+      "lat": 41.32,
+      "lon": -96.367
+    },
+    {
+      "code": "KUEX",
+      "name": "Hastings, NE",
+      "lat": 40.321,
+      "lon": -98.442
+    },
+    {
+      "code": "KESX",
+      "name": "Las Vegas, NV",
+      "lat": 35.701,
+      "lon": -114.891
+    },
+    {
+      "code": "KLRX",
+      "name": "Elko, NV",
+      "lat": 40.74,
+      "lon": -116.803
+    },
+    {
+      "code": "KRGX",
+      "name": "Reno, NV",
+      "lat": 39.754,
+      "lon": -119.462
+    },
+    {
+      "code": "KABX",
+      "name": "Albuquerque, NM",
+      "lat": 35.15,
+      "lon": -106.824
+    },
+    {
+      "code": "KFDX",
+      "name": "Cannon AFB, NM",
+      "lat": 34.635,
+      "lon": -103.63
+    },
+    {
+      "code": "KHDX",
+      "name": "Holloman AFB, NM",
+      "lat": 33.077,
+      "lon": -106.122
+    },
+    {
+      "code": "KBGM",
+      "name": "Binghamton, NY",
+      "lat": 42.2,
+      "lon": -75.985
+    },
+    {
+      "code": "KBUF",
+      "name": "Buffalo, NY",
+      "lat": 42.949,
+      "lon": -78.737
+    },
+    {
+      "code": "KENX",
+      "name": "Albany, NY",
+      "lat": 42.586,
+      "lon": -74.064
+    },
+    {
+      "code": "KOKX",
+      "name": "New York City, NY",
+      "lat": 40.866,
+      "lon": -72.864
+    },
+    {
+      "code": "KTYX",
+      "name": "Fort Drum, NY",
+      "lat": 43.756,
+      "lon": -75.68
+    },
+    {
+      "code": "KLTX",
+      "name": "Wilmington, NC",
+      "lat": 33.989,
+      "lon": -78.429
+    },
+    {
+      "code": "KMHX",
+      "name": "Morehead City, NC",
+      "lat": 34.776,
+      "lon": -76.876
+    },
+    {
+      "code": "KRAX",
+      "name": "Raleigh-Durham, NC",
+      "lat": 35.665,
+      "lon": -78.49
+    },
+    {
+      "code": "KBIS",
+      "name": "Bismarck, ND",
+      "lat": 46.771,
+      "lon": -100.76
+    },
+    {
+      "code": "KMVX",
+      "name": "Grand Forks, ND",
+      "lat": 47.528,
+      "lon": -97.325
+    },
+    {
+      "code": "KCLE",
+      "name": "Cleveland, OH",
+      "lat": 41.413,
+      "lon": -81.86
+    },
+    {
+      "code": "KILN",
+      "name": "Wilmington, OH",
+      "lat": 39.42,
+      "lon": -83.822
+    },
+    {
+      "code": "KFDR",
+      "name": "Frederick, OK",
+      "lat": 34.362,
+      "lon": -98.976
+    },
+    {
+      "code": "KINX",
+      "name": "Tulsa, OK",
+      "lat": 36.175,
+      "lon": -95.564
+    },
+    {
+      "code": "KTLX",
+      "name": "Oklahoma City, OK",
+      "lat": 35.333,
+      "lon": -97.277
+    },
+    {
+      "code": "KVNX",
+      "name": "Vance AFB, OK",
+      "lat": 36.741,
+      "lon": -98.128
+    },
+    {
+      "code": "KMAX",
+      "name": "Medford, OR",
+      "lat": 42.081,
+      "lon": -122.717
+    },
+    {
+      "code": "KPDT",
+      "name": "Pendleton, OR",
+      "lat": 45.691,
+      "lon": -118.853
+    },
+    {
+      "code": "KRTX",
+      "name": "Portland, OR",
+      "lat": 45.715,
+      "lon": -122.965
+    },
+    {
+      "code": "KCCX",
+      "name": "State College, PA",
+      "lat": 40.923,
+      "lon": -78.004
+    },
+    {
+      "code": "KDIX",
+      "name": "Philadelphia, PA",
+      "lat": 39.947,
+      "lon": -74.411
+    },
+    {
+      "code": "KPBZ",
+      "name": "Pittsburgh, PA",
+      "lat": 40.532,
+      "lon": -80.218
+    },
+    {
+      "code": "TJUA",
+      "name": "San Juan, PR",
+      "lat": 18.116,
+      "lon": -66.078
+    },
+    {
+      "code": "KCAE",
+      "name": "Columbia, SC",
+      "lat": 33.949,
+      "lon": -81.119
+    },
+    {
+      "code": "KCLX",
+      "name": "Charleston, SC",
+      "lat": 32.656,
+      "lon": -81.042
+    },
+    {
+      "code": "KGSP",
+      "name": "Greer, SC",
+      "lat": 34.883,
+      "lon": -82.22
+    },
+    {
+      "code": "KABR",
+      "name": "Aberdeen, SD",
+      "lat": 45.456,
+      "lon": -98.413
+    },
+    {
+      "code": "KUDX",
+      "name": "Rapid City, SD",
+      "lat": 44.125,
+      "lon": -102.83
+    },
+    {
+      "code": "KFSD",
+      "name": "Sioux Falls, SD",
+      "lat": 43.588,
+      "lon": -96.729
+    },
+    {
+      "code": "KMRX",
+      "name": "Knoxville, TN",
+      "lat": 36.168,
+      "lon": -83.402
+    },
+    {
+      "code": "KNQA",
+      "name": "Memphis, TN",
+      "lat": 35.345,
+      "lon": -89.873
+    },
+    {
+      "code": "KOHX",
+      "name": "Nashville, TN",
+      "lat": 36.247,
+      "lon": -86.563
+    },
+    {
+      "code": "KAMA",
+      "name": "Amarillo, TX",
+      "lat": 35.233,
+      "lon": -101.709
+    },
+    {
+      "code": "KBRO",
+      "name": "Brownsville, TX",
+      "lat": 25.916,
+      "lon": -97.419
+    },
+    {
+      "code": "KCRP",
+      "name": "Corpus Christi, TX",
+      "lat": 27.784,
+      "lon": -97.511
+    },
+    {
+      "code": "KDYX",
+      "name": "Dyess AFB, TX",
+      "lat": 32.538,
+      "lon": -99.254
+    },
+    {
+      "code": "KEPZ",
+      "name": "El Paso, TX",
+      "lat": 31.873,
+      "lon": -106.698
+    },
+    {
+      "code": "KEWX",
+      "name": "San Antonio, TX",
+      "lat": 29.704,
+      "lon": -98.028
+    },
+    {
+      "code": "KFWS",
+      "name": "Fort Worth, TX",
+      "lat": 32.573,
+      "lon": -97.303
+    },
+    {
+      "code": "KGRK",
+      "name": "Fort Hood, TX",
+      "lat": 30.722,
+      "lon": -97.383
+    },
+    {
+      "code": "KHGX",
+      "name": "Houston, TX",
+      "lat": 29.472,
+      "lon": -95.079
+    },
+    {
+      "code": "KDFX",
+      "name": "Laughlin AFB, TX",
+      "lat": 29.273,
+      "lon": -100.28
+    },
+    {
+      "code": "KLBB",
+      "name": "Lubbock, TX",
+      "lat": 33.654,
+      "lon": -101.814
+    },
+    {
+      "code": "KMAF",
+      "name": "Midland, TX",
+      "lat": 31.943,
+      "lon": -102.189
+    },
+    {
+      "code": "KSJT",
+      "name": "San Angelo, TX",
+      "lat": 31.371,
+      "lon": -100.492
+    },
+    {
+      "code": "KICX",
+      "name": "Cedar City, UT",
+      "lat": 37.591,
+      "lon": -112.862
+    },
+    {
+      "code": "KMTX",
+      "name": "Salt Lake City, UT",
+      "lat": 41.263,
+      "lon": -112.448
+    },
+    {
+      "code": "KAKQ",
+      "name": "Norfolk, VA",
+      "lat": 36.984,
+      "lon": -77.007
+    },
+    {
+      "code": "KFCX",
+      "name": "Roanoke, VA",
+      "lat": 37.024,
+      "lon": -80.274
+    },
+    {
+      "code": "KATX",
+      "name": "Seattle, WA",
+      "lat": 48.195,
+      "lon": -122.496
+    },
+    {
+      "code": "KOTX",
+      "name": "Spokane, WA",
+      "lat": 47.68,
+      "lon": -117.626
+    },
+    {
+      "code": "KRLX",
+      "name": "Charleston, WV",
+      "lat": 38.311,
+      "lon": -81.723
+    },
+    {
+      "code": "KARX",
+      "name": "La Crosse, WI",
+      "lat": 43.823,
+      "lon": -91.191
+    },
+    {
+      "code": "KGRB",
+      "name": "Green Bay, WI",
+      "lat": 44.498,
+      "lon": -88.111
+    },
+    {
+      "code": "KMKX",
+      "name": "Milwaukee, WI",
+      "lat": 42.968,
+      "lon": -88.551
+    },
+    {
+      "code": "KCYS",
+      "name": "Cheyenne, WY",
+      "lat": 41.152,
+      "lon": -104.806
+    },
+    {
+      "code": "KRIW",
+      "name": "Riverton, WY",
+      "lat": 43.066,
+      "lon": -108.477
+    }
+  ]
+}
