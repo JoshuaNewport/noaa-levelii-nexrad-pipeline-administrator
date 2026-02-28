@@ -1,6 +1,6 @@
 # NEXRAD Radar: Level II Processing Pipeline's Administrator "Console"
 
-An Electron-based administration interface for the NOAA Levelii Nexrad Pipeline (https://github.com/JoshuaNewport/noaa-levelii-nexrad-pipeline)
+An Electron-based administration interface for the NOAA Levelii Nexrad Pipeline (https://github.com/JoshuaNewport/nexrad-levelii-pipeline)
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ An Electron-based administration interface for the NOAA Levelii Nexrad Pipeline 
 
 1. Clone the repository:
    ```bash
-   git clone <https://github.com/JoshuaNewport/noaa-levelii-nexrad-pipeline-administrator>
+   git clone <https://github.com/JoshuaNewport/nexrad-levelii-pipeline-administrator>
    cd noaa-levelii-nexrad-pipeline-administrator
    ```
 
