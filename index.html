@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noaa Nexrad Levelii Pipeline Administrator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; }
@@ -77,10 +79,25 @@
         
         .chart-container { position: relative; height: 300px; }
         
+        .selection-btn { padding: 6px 12px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: background 0.2s; }
+        .selection-btn.active { background: #ff6b6b; }
+        
         #message { margin-bottom: 20px; }
         .message { padding: 12px 16px; border-radius: 6px; font-size: 13px; border-left: 3px solid transparent; }
         .message.success { background: #1b5e20; color: #4CAF50; border-left-color: #4CAF50; }
         .message.error { background: #b71c1c; color: #f44336; border-left-color: #f44336; }
+
+        .selection-rect {
+            position: absolute;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            pointer-events: none;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 0;
+        }
     </style>
 </head>
 <body>
@@ -216,6 +233,14 @@
                 </div>
                 
                 <div class="panel">
+                    <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+                        Map View
+                        <button id="selectionModeBtn" class="selection-btn" onclick="toggleSelectionMode()">Selection Mode: OFF</button>
+                    </div>
+                    <div id="map" style="position: relative; width: 100%; height: 500px; border-radius: 6px; overflow: hidden; background: #252525;"></div>
+                </div>
+
+                <div class="panel">
                     <div class="panel-title">Performance History</div>
                     <div class="chart-container">
                         <canvas id="metricsChart"></canvas>
@@ -245,7 +270,208 @@
         let metricsHistory = { labels: [], fetched: [], failed: [] };
         let metricsChart = null;
         let allStations = [];
+        let monitoredStations = [];
         let lastKnownRunning = null;
+        let isSelectionMode = false;
+        let map;
+        let selectionStart = null;
+        let selectionRect = null;
+
+        function initMap() {
+            map = new maplibregl.Map({
+                container: 'map',
+                style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // Basic style
+                center: [-98.5795, 39.8283], // Center of USA
+                zoom: 3
+            });
+
+            map.on('load', () => {
+                map.addSource('stations', {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: []
+                    }
+                });
+
+                map.addLayer({
+                    id: 'stations-layer',
+                    type: 'circle',
+                    source: 'stations',
+                    paint: {
+                        'circle-radius': 6,
+                        'circle-color': [
+                            'case',
+                            ['get', 'monitored'],
+                            '#004E01', // Monitored: Green
+                            '#D40000'  // Available: Red
+                        ],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#818181'
+                    }
+                });
+
+                // Tooltip on hover
+                const popup = new maplibregl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+
+                map.on('mouseenter', 'stations-layer', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const { code, name, monitored } = e.features[0].properties;
+                    const description = `<strong>${code}</strong><br>${name}<br>${monitored ? 'Monitored' : 'Available'}`;
+
+                    popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                });
+
+                map.on('mouseleave', 'stations-layer', () => {
+                    map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+
+                // Click to add/remove
+                map.on('click', 'stations-layer', (e) => {
+                    if (isSelectionMode) return;
+                    const { code, monitored } = e.features[0].properties;
+                    if (monitored) {
+                        removeStation(code);
+                    } else {
+                        addStationToFetcher(code);
+                    }
+                });
+
+                // Selection rectangle handlers
+                map.on('mousedown', (e) => {
+                    if (!isSelectionMode) return;
+                    
+                    // Prevent default to avoid map interaction
+                    e.originalEvent.preventDefault();
+                    
+                    if (selectionRect) selectionRect.remove();
+                    
+                    selectionStart = e.point;
+                    selectionRect = document.createElement('div');
+                    selectionRect.className = 'selection-rect';
+                    map.getCanvasContainer().appendChild(selectionRect);
+                });
+
+                map.on('mousemove', (e) => {
+                    if (!isSelectionMode || !selectionStart || !selectionRect) return;
+
+                    const current = e.point;
+                    const left = Math.min(selectionStart.x, current.x);
+                    const top = Math.min(selectionStart.y, current.y);
+                    const width = Math.abs(selectionStart.x - current.x);
+                    const height = Math.abs(selectionStart.y - current.y);
+
+                    selectionRect.style.left = left + 'px';
+                    selectionRect.style.top = top + 'px';
+                    selectionRect.style.width = width + 'px';
+                    selectionRect.style.height = height + 'px';
+                });
+
+                map.on('mouseup', (e) => {
+                    if (!isSelectionMode || !selectionStart) return;
+
+                    const selectionEnd = e.point;
+                    
+                    if (selectionRect) {
+                        selectionRect.remove();
+                        selectionRect = null;
+                    }
+                    
+                    const p1 = selectionStart;
+                    const p2 = selectionEnd;
+                    selectionStart = null;
+
+                    // Calculate which stations are in the bounding box
+                    if (Math.abs(p1.x - p2.x) > 5 || Math.abs(p1.y - p2.y) > 5) {
+                        const sw = map.unproject([Math.min(p1.x, p2.x), Math.max(p1.y, p2.y)]);
+                        const ne = map.unproject([Math.max(p1.x, p2.x), Math.min(p1.y, p2.y)]);
+                        
+                        const minLng = sw.lng;
+                        const maxLng = ne.lng;
+                        const minLat = sw.lat;
+                        const maxLat = ne.lat;
+
+                        const stationsToAdd = allStations.filter(s => 
+                            s.lon >= minLng && s.lon <= maxLng && 
+                            s.lat >= minLat && s.lat <= maxLat &&
+                            !monitoredStations.some(ms => ms.name === s.code)
+                        );
+
+                        if (stationsToAdd.length > 0) {
+                            console.log(`Adding ${stationsToAdd.length} stations from region selection`);
+                            
+                            (async () => {
+                                for (const s of stationsToAdd) {
+                                    await addStationToFetcher(s.code, true);
+                                }
+                                updateUI();
+                                showMessage(`Added ${stationsToAdd.length} stations from selection`, 'success');
+                            })();
+                        }
+                    }
+                });
+
+                updateMapMarkers();
+            });
+        }
+
+        function updateMapMarkers() {
+            if (!map || !map.getSource('stations')) return;
+
+            const features = allStations.map(s => {
+                const isMonitored = monitoredStations.some(ms => ms.name === s.code);
+                return {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [s.lon, s.lat]
+                    },
+                    properties: {
+                        code: s.code,
+                        name: s.name,
+                        monitored: isMonitored
+                    }
+                };
+            });
+
+            map.getSource('stations').setData({
+                type: 'FeatureCollection',
+                features: features
+            });
+        }
+
+        function toggleSelectionMode() {
+            isSelectionMode = !isSelectionMode;
+            const btn = document.getElementById('selectionModeBtn');
+            btn.classList.toggle('active', isSelectionMode);
+            btn.textContent = `Selection Mode: ${isSelectionMode ? 'ON' : 'OFF'}`;
+            
+            if (map) {
+                if (isSelectionMode) {
+                    map.dragPan.disable();
+                    map.dragRotate.disable();
+                    map.scrollZoom.disable();
+                    map.touchZoomRotate.disable();
+                    map.boxZoom.disable();
+                    map.doubleClickZoom.disable();
+                    map.getCanvas().style.cursor = 'crosshair';
+                } else {
+                    map.dragPan.enable();
+                    map.dragRotate.enable();
+                    map.scrollZoom.enable();
+                    map.touchZoomRotate.enable();
+                    map.boxZoom.enable();
+                    map.doubleClickZoom.enable();
+                    map.getCanvas().style.cursor = '';
+                }
+            }
+            console.log(`Selection mode: ${isSelectionMode}`);
+        }
         
         async function fetchAvailableStations() {
             const status = document.getElementById('stationLoadStatus');
@@ -258,7 +484,7 @@
                 if (!stations.length) {
                     throw new Error('No stations in response');
                 }
-                allStations = stations.map(station => (station.code || station.name || "").trim()).sort().filter(s => s);
+                allStations = stations.filter(s => s.code && s.name).sort((a, b) => a.code.localeCompare(b.code));
                 status.textContent = `✓ Loaded ${allStations.length} stations`;
                 status.style.color = '#4CAF50';
             } catch (error) {
@@ -270,35 +496,48 @@
                         const fallbackResponse = await fetch('data/stations.json');
                         if (fallbackResponse.ok) {
                             const data = await fallbackResponse.json();
-                            allStations = data.stations.map(s => s.code.trim()).sort();
+                            allStations = data.stations.filter(s => s.code && s.name).sort((a, b) => a.code.localeCompare(b.code));
                             status.textContent = `⚠ Loaded ${allStations.length} from local fallback`;
                             status.style.color = '#ff9800';
                             updateStationSelector();
+                            updateMapMarkers();
                             return;
                         }
                     } catch (e) {}
                 }
-                allStations = ['KTLX', 'KCRP', 'KEWX', 'KAMA', 'KDVN', 'KOUN', 'KBRO'];
+                allStations = [
+                    { code: 'KTLX', name: 'Oklahoma City, OK', lat: 35.333, lon: -97.278 },
+                    { code: 'KCRP', name: 'Corpus Christi, TX', lat: 27.784, lon: -97.511 },
+                    { code: 'KEWX', name: 'Austin/San Antonio, TX', lat: 29.704, lon: -98.029 },
+                    { code: 'KAMA', name: 'Amarillo, TX', lat: 35.233, lon: -101.709 },
+                    { code: 'KDVN', name: 'Davenport, IA', lat: 41.612, lon: -90.581 },
+                    { code: 'KOUN', name: 'Norman, OK', lat: 35.236, lon: -97.462 },
+                    { code: 'KBRO', name: 'Brownsville, TX', lat: 25.916, lon: -97.419 }
+                ].sort((a, b) => a.code.localeCompare(b.code));
                 status.textContent = '⚠ Using built-in station list';
                 status.style.color = '#ff9800';
             }
             updateStationSelector();
+            updateMapMarkers();
         }
         
         function updateStationSelector(filter = "") {
             const select = document.getElementById('availableStations');
             const selectedStations = Array.from(
                 document.querySelectorAll('.station-badge')
-            ).map(b => b.firstChild.textContent.trim());
+            ).map(b => b.firstChild.textContent.split(' ')[0].trim()); // Extract code from badge
             const available = allStations
-                .filter(s => !selectedStations.includes(s))
-                .filter(s => s.toUpperCase().includes(filter.toUpperCase()));
+                .filter(s => !selectedStations.includes(s.code))
+                .filter(s => 
+                    s.code.toUpperCase().includes(filter.toUpperCase()) || 
+                    s.name.toUpperCase().includes(filter.toUpperCase())
+                );
             if (!available.length) {
                 select.innerHTML = `<option disabled selected>No available stations</option>`;
                 return;
             }
             select.innerHTML = available
-                .map(s => `<option value="${s}">${s}</option>`)
+                .map(s => `<option value="${s.code}">${s.code} - ${s.name}</option>`)
                 .join('');
         }
         
@@ -308,7 +547,7 @@
             await addStationToFetcher(station);
         }
         
-        async function addStationToFetcher(station) {
+        async function addStationToFetcher(station, skipUpdate = false) {
             try {
                 const response = await fetch(`${API_BASE}/api/stations`, {
                     method: 'POST',
@@ -318,7 +557,7 @@
                 const result = await response.json();
                 if (result.success) {
                     //showMessage(`Added ${station}`, 'success');
-                    updateUI();
+                    if (!skipUpdate) updateUI();
                 } else {
                     showMessage('Error: ' + (result.error || 'Unknown error'), 'error');
                 }
@@ -446,11 +685,17 @@
         }
         
         function updateStations(stations) {
+            monitoredStations = stations;
             const badges = document.getElementById('stationBadges');
             badges.innerHTML = stations.length > 0 
-                ? stations.map(s => `<div class="station-badge">${s.name} <span class="remove" onclick="removeStation('${s.name}')">×</span></div>`).join('')
+                ? stations.map(s => {
+                    const fullStation = allStations.find(as => as.code === s.name);
+                    const displayName = fullStation ? `${fullStation.code} - ${fullStation.name}` : s.name;
+                    return `<div class="station-badge">${displayName} <span class="remove" onclick="removeStation('${s.name}')">×</span></div>`;
+                }).join('')
                 : '<div class="empty-state">No stations selected</div>';
             updateStationSelector(document.getElementById('stationSearch').value);
+            updateMapMarkers();
         }
         
         function updateMetrics(metrics) {
@@ -568,6 +813,7 @@
         fetchAvailableStations();
         fetchConfig();
         updateUI();
+        initMap();
         setInterval(updateUI, 5000);
     </script>
 </body>
