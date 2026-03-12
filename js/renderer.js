@@ -637,7 +637,7 @@
             }).join('');
         }
         
-        function updatePoolCharts() {
+        function initPoolCharts() {
             const chartConfigs = [
                 { 
                     id: 'threadPoolChart', 
@@ -670,11 +670,7 @@
 
             chartConfigs.forEach(cfg => {
                 const ctx = document.getElementById(cfg.id);
-                if (!ctx) return;
-
-                if (poolCharts[cfg.key]) {
-                    poolCharts[cfg.key].destroy();
-                }
+                if (!ctx || poolCharts[cfg.key]) return;
 
                 poolCharts[cfg.key] = new Chart(ctx, {
                     type: 'line',
@@ -693,6 +689,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: {
+                            duration: 500,
+                            easing: 'easeInOutQuart'
+                        },
                         plugins: {
                             legend: { 
                                 display: true,
@@ -707,6 +707,56 @@
                         }
                     }
                 });
+            });
+        }
+
+        function updatePoolCharts() {
+            const chartsToInit = ['thread', 'discovery', 'buffer'];
+            let needsInit = false;
+            
+            for (let key of chartsToInit) {
+                if (!poolCharts[key]) {
+                    needsInit = true;
+                    break;
+                }
+            }
+            
+            if (needsInit) {
+                initPoolCharts();
+                return;
+            }
+
+            const chartConfigs = [
+                { 
+                    key: 'thread',
+                    datasets: [
+                        { label: 'Active', data: poolHistory.threadActive },
+                        { label: 'Pending', data: poolHistory.threadPending }
+                    ]
+                },
+                { 
+                    key: 'discovery',
+                    datasets: [
+                        { label: 'Active', data: poolHistory.discoveryActive },
+                        { label: 'Pending', data: poolHistory.discoveryPending }
+                    ]
+                },
+                { 
+                    key: 'buffer',
+                    datasets: [
+                        { label: 'Available', data: poolHistory.bufferAvailable },
+                        { label: 'Total', data: poolHistory.bufferTotal }
+                    ]
+                }
+            ];
+
+            chartConfigs.forEach(cfg => {
+                const chart = poolCharts[cfg.key];
+                chart.data.labels = poolHistory.labels;
+                cfg.datasets.forEach((ds, idx) => {
+                    chart.data.datasets[idx].data = ds.data;
+                });
+                chart.update('none');
             });
         }
 
@@ -739,13 +789,9 @@
             }
         }
         
-        function updateChart(metrics) {
+        function initChart() {
             const ctx = document.getElementById('metricsChart');
-            if (!ctx) return;
-            
-            if (metricsChart) {
-                metricsChart.destroy();
-            }
+            if (!ctx || metricsChart) return;
             
             metricsChart = new Chart(ctx, {
                 type: 'line',
@@ -773,6 +819,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 500,
+                        easing: 'easeInOutQuart'
+                    },
                     plugins: {
                         legend: { labels: { color: '#e0e0e0' } }
                     },
@@ -782,6 +832,17 @@
                     }
                 }
             });
+        }
+
+        function updateChart(metrics) {
+            if (!metricsChart) {
+                initChart();
+            }
+            
+            metricsChart.data.labels = metricsHistory.labels;
+            metricsChart.data.datasets[0].data = metricsHistory.fetched;
+            metricsChart.data.datasets[1].data = metricsHistory.failed;
+            metricsChart.update('none');
         }
         
         function formatTime(seconds) {
