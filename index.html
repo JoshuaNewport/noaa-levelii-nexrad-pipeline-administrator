@@ -7,98 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; }
-        
-        .layout { display: flex; min-height: 100vh; }
-        
-        .sidebar { width: 280px; background: #1a1a1a; border-right: 1px solid #2a2a2a; padding: 0; display: flex; flex-direction: column; }
-        .main-content { flex: 1; display: flex; flex-direction: column; }
-        
-        .sidebar-header { padding: 24px 20px; border-bottom: 1px solid #2a2a2a; }
-        .sidebar-header h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .sidebar-header p { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .sidebar-content { flex: 1; overflow-y: auto; padding: 20px; }
-        .sidebar-section { margin-bottom: 28px; }
-        .sidebar-section-title { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600; }
-        
-        .control-btn { width: 100%; padding: 14px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: all 0.2s; }
-        .control-btn.running { background: #ff6b6b; color: white; }
-        .control-btn.running:hover { background: #ff5252; }
-        .control-btn.paused { background: #51cf66; color: white; }
-        .control-btn.paused:hover { background: #40c057; }
-        .control-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-state { font-size: 12px; opacity: 0.9; }
-        
-        .sidebar-stat { background: #252525; padding: 14px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #667eea; }
-        .sidebar-stat-label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 6px; }
-        .sidebar-stat-value { font-size: 18px; font-weight: 700; color: #fff; }
-        
-        .topbar { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
-        .topbar-title { font-size: 20px; font-weight: 700; color: #fff; }
-        .topbar-status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #888; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #f44336; animation: pulse 2s infinite; }
-        .status-dot.running { background: #4CAF50; animation: none; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        .content { flex: 1; overflow-y: auto; padding: 24px; }
-        
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        @media (max-width: 1400px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-        
-        .metric-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px; }
-        .metric-label { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
-        .metric-value { font-size: 28px; font-weight: 700; color: #fff; }
-        
-        .panel { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
-        .panel-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .station-selector { display: flex; gap: 10px; margin-bottom: 16px; }
-        .station-selector select { flex: 1; padding: 10px; background: #252525; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 13px; cursor: pointer; }
-        .station-selector select:focus { outline: none; border-color: #667eea; }
-        .station-selector button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s; font-size: 13px; }
-        .station-selector button:hover { background: #5568d3; }
-        
-        .station-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; align-content: flex-start; }
-        .station-badge { background: #667eea; color: white; padding: 8px 12px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
-        .station-badge .remove { cursor: pointer; opacity: 0.7; font-weight: bold; }
-        .station-badge .remove:hover { opacity: 1; }
-        .empty-state { color: #666; font-size: 13px; }
-        
-        .config-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-        .config-item { display: flex; flex-direction: column; gap: 8px; }
-        .config-item label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: 600; }
-        .config-item input { padding: 10px; background: #252525; border: 1px solid #444; border-radius: 6px; color: #e0e0e0; font-size: 13px; }
-        .config-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
-        .config-item.checkbox-item { flex-direction: row-reverse; align-items: center; justify-content: flex-end; gap: 12px; }
-        .config-save-btn { width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s; font-size: 13px; }
-        .config-save-btn:hover { background: #5568d3; }
-        
-        .chart-container { position: relative; height: 300px; }
-        
-        .selection-btn { padding: 6px 12px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: background 0.2s; }
-        .selection-btn.active { background: #ff6b6b; }
-        
-        #message { margin-bottom: 20px; }
-        .message { padding: 12px 16px; border-radius: 6px; font-size: 13px; border-left: 3px solid transparent; }
-        .message.success { background: #1b5e20; color: #4CAF50; border-left-color: #4CAF50; }
-        .message.error { background: #b71c1c; color: #f44336; border-left-color: #f44336; }
-
-        .selection-rect {
-            position: absolute;
-            background: rgba(102, 126, 234, 0.2);
-            border: 2px solid #667eea;
-            pointer-events: none;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 0;
-            height: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="layout">
@@ -167,73 +76,177 @@
                         <div class="metric-label">Success Rate</div>
                         <div class="metric-value" id="successRate">N/A</div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Throughput</div>
-                        <div class="metric-value" id="throughput">0 fps</div>
+                    <div class="metric-card" id="avgFramesPerMinCard" style="display: none;">
+                        <div class="metric-label">Avg Frames/Min</div>
+                        <div class="metric-value" id="avgFramesPerMin">0</div>
+                    </div>
+                    <div class="metric-card" id="diskUsageGBCard" style="display: none;">
+                        <div class="metric-label">Disk Usage (GB)</div>
+                        <div class="metric-value" id="diskUsageGB">0</div>
+                    </div>
+                    <div class="metric-card" id="diskUsageMBCard" style="display: none;">
+                        <div class="metric-label">Disk Usage (MB)</div>
+                        <div class="metric-value" id="diskUsageMB">0</div>
+                    </div>
+                </div>
+
+                <div class="panel" id="resourcePoolsPanel" style="display: none;">
+                    <div class="panel-title" onclick="togglePanel(this)">Resource Pools</div>
+                    <div class="panel-body">
+                        <div class="pool-grid">
+                        <div class="pool-item">
+                            <div class="pool-name">Thread Pool</div>
+                            <div class="pool-stats">
+                                <div class="pool-stat">Active <span><span id="threadPoolActive">0</span></span></div>
+                                <div class="pool-stat">Pending <span><span id="threadPoolPending">0</span></span></div>
+                                <div class="pool-stat">Workers <span><span id="threadPoolWorkers">0</span></span></div>
+                            </div>
+                        </div>
+                        <div class="pool-item">
+                            <div class="pool-name">Discovery Pool</div>
+                            <div class="pool-stats">
+                                <div class="pool-stat">Active <span><span id="discoveryPoolActive">0</span></span></div>
+                                <div class="pool-stat">Pending <span><span id="discoveryPoolPending">0</span></span></div>
+                                <div class="pool-stat">Workers <span><span id="discoveryPoolWorkers">0</span></span></div>
+                            </div>
+                        </div>
+                        <div class="pool-item">
+                            <div class="pool-name">Buffer Pool</div>
+                            <div class="pool-stats">
+                                <div class="pool-stat">Available <span><span id="bufferPoolAvailable">0</span></span></div>
+                                <div class="pool-stat">Total <span><span id="bufferPoolTotal">0</span></span></div>
+                                <div class="pool-stat">Size <span><span id="bufferPoolSize">0</span> MB</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pool-charts-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
+                        <div class="chart-container" style="height: 150px;">
+                            <canvas id="threadPoolChart"></canvas>
+                        </div>
+                        <div class="chart-container" style="height: 150px;">
+                            <canvas id="discoveryPoolChart"></canvas>
+                        </div>
+                        <div class="chart-container" style="height: 150px;">
+                            <canvas id="bufferPoolChart"></canvas>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel" id="processMetricsPanel" style="display: none;">
+                    <div class="panel-title" onclick="togglePanel(this)">Process Metrics</div>
+                    <div class="panel-body">
+                        <div class="metrics-list-grid">
+                            <div class="list-item">
+                                <span class="list-label">Active Discovery Scans</span>
+                                <span class="list-value" id="activeDiscoveryCount">0</span>
+                            </div>
+                            <div class="list-item">
+                                <span class="list-label">Storage Pending Tasks</span>
+                                <span class="list-value" id="storagePendingTasks">0</span>
+                            </div>
+                            <div class="list-item">
+                                <span class="list-label">Index Cache Size</span>
+                                <span class="list-value" id="indexCacheSize">0</span>
+                            </div>
+                            <div class="list-item">
+                                <span class="list-label">Total Stations Tracked</span>
+                                <span class="list-value" id="totalStationsTracked">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" id="stationStatsPanel" style="display: none;">
+                    <div class="panel-title" onclick="togglePanel(this)">Station Statistics</div>
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>Station</th>
+                                        <th>Fetched</th>
+                                        <th>Failed</th>
+                                        <th>Last Fetch</th>
+                                        <th>Last Frame</th>
+                                        <th>Last Scan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stationStatsBody">
+                                    <tr><td colspan="6" style="text-align:center;padding:20px;color:#666;">No station data available</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="panel">
-                    <div class="panel-title">Add Stations</div>
-                    <div class="station-selector">
-                      <input type="text" id="stationSearch"
-                        oninput="updateStationSelector(this.value)"
-                        placeholder="Search station (e.g., KTLX)"
-                        style="flex:1;padding:10px;background:#252525;border:1px solid #444;border-radius:6px;color:#e0e0e0;font-size:13px;">
-                        <select id="availableStations"
-                          style="flex:1;padding:10px;background:#252525;border:1px solid #444;border-radius:6px;color:#e0e0e0;font-size:13px;">
-                        </select>
-                        <button onclick="addSelectedStation()">Add</button>
+                    <div class="panel-title" onclick="togglePanel(this)">Add Stations</div>
+                    <div class="panel-body">
+                        <div class="station-selector">
+                          <input type="text" id="stationSearch"
+                            oninput="updateStationSelector(this.value)"
+                            placeholder="Search station (e.g., KTLX)"
+                            style="flex:1;padding:10px;background:#252525;border:1px solid #444;border-radius:6px;color:#e0e0e0;font-size:13px;">
+                            <select id="availableStations"
+                              style="flex:1;padding:10px;background:#252525;border:1px solid #444;border-radius:6px;color:#e0e0e0;font-size:13px;">
+                            </select>
+                            <button onclick="addSelectedStation()">Add</button>
+                        </div>
+                        <div id="stationLoadStatus" style="margin-top:8px;font-size:11px;color:#666;"></div>
                     </div>
-                    <div id="stationLoadStatus" style="margin-top:8px;font-size:11px;color:#666;"></div>
                 </div>
                 
                 <div class="panel">
-                    <div class="panel-title">Monitored Stations</div>
-                    <div class="station-list" id="stationBadges">
-                        <div class="empty-state">No stations selected</div>
+                    <div class="panel-title" onclick="togglePanel(this)">Monitored Stations</div>
+                    <div class="panel-body">
+                        <div class="station-list" id="stationBadges">
+                            <div class="empty-state">No stations selected</div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="panel" id="configPanel">
-                    <div class="panel-title">System Configuration</div>
-                    <form id="configForm" onsubmit="event.preventDefault(); updateConfig();">
-                        <div class="config-grid">
-                            <div class="config-item checkbox-item">
-                                <label for="auto_cleanup_enabled">Auto Cleanup</label>
-                                <input type="checkbox" id="auto_cleanup_enabled">
+                    <div class="panel-title" onclick="togglePanel(this)">System Configuration</div>
+                    <div class="panel-body">
+                        <form id="configForm" onsubmit="event.preventDefault(); updateConfig();">
+                            <div class="config-grid">
+                                <div class="config-item checkbox-item">
+                                    <label for="auto_cleanup_enabled">Auto Cleanup</label>
+                                    <input type="checkbox" id="auto_cleanup_enabled">
+                                </div>
+                                <div class="config-item">
+                                    <label for="buffer_pool_size">Buffer Pool Size</label>
+                                    <input type="number" id="buffer_pool_size">
+                                </div>
+                                <div class="config-item">
+                                    <label for="buffer_size_mb">Buffer Size (MB)</label>
+                                    <input type="number" id="buffer_size_mb">
+                                </div>
+                                <div class="config-item">
+                                    <label for="cleanup_interval_seconds">Cleanup Interval (s)</label>
+                                    <input type="number" id="cleanup_interval_seconds">
+                                </div>
+                                <div class="config-item">
+                                    <label for="fetcher_thread_pool_size">Fetcher Thread Pool Size</label>
+                                    <input type="number" id="fetcher_thread_pool_size">
+                                </div>
+                                <div class="config-item">
+                                    <label for="max_frames_per_station">Max Frames Per Station</label>
+                                    <input type="number" id="max_frames_per_station">
+                                </div>
+                                <div class="config-item">
+                                    <label for="scan_interval_seconds">Scan Interval (s)</label>
+                                    <input type="number" id="scan_interval_seconds">
+                                </div>
                             </div>
-                            <div class="config-item">
-                                <label for="buffer_pool_size">Buffer Pool Size</label>
-                                <input type="number" id="buffer_pool_size">
-                            </div>
-                            <div class="config-item">
-                                <label for="buffer_size_mb">Buffer Size (MB)</label>
-                                <input type="number" id="buffer_size_mb">
-                            </div>
-                            <div class="config-item">
-                                <label for="cleanup_interval_seconds">Cleanup Interval (s)</label>
-                                <input type="number" id="cleanup_interval_seconds">
-                            </div>
-                            <div class="config-item">
-                                <label for="fetcher_thread_pool_size">Fetcher Thread Pool Size</label>
-                                <input type="number" id="fetcher_thread_pool_size">
-                            </div>
-                            <div class="config-item">
-                                <label for="max_frames_per_station">Max Frames Per Station</label>
-                                <input type="number" id="max_frames_per_station">
-                            </div>
-                            <div class="config-item">
-                                <label for="scan_interval_seconds">Scan Interval (s)</label>
-                                <input type="number" id="scan_interval_seconds">
-                            </div>
-                        </div>
-                        <button type="submit" class="config-save-btn">Save Configuration</button>
-                    </form>
+                            <button type="submit" class="config-save-btn">Save Configuration</button>
+                        </form>
+                    </div>
                 </div>
                 
                 <div class="panel">
-                    <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="panel-title no-toggle" style="display: flex; justify-content: space-between; align-items: center;">
                         Map View
                         <button id="selectionModeBtn" class="selection-btn" onclick="toggleSelectionMode()">Selection Mode: OFF</button>
                     </div>
@@ -241,580 +254,17 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Performance History</div>
-                    <div class="chart-container">
-                        <canvas id="metricsChart"></canvas>
+                    <div class="panel-title" onclick="togglePanel(this)">Performance History</div>
+                    <div class="panel-body">
+                        <div class="chart-container">
+                            <canvas id="metricsChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <script>
-        let API_BASE = localStorage.getItem('api_base') || 'http://localhost:13480';
-        let STATIONS_URL = localStorage.getItem('stations_url') || 'data/stations.json';
-        
-        document.getElementById('client_api_base').value = API_BASE;
-        document.getElementById('client_stations_url').value = STATIONS_URL;
-
-        function saveClientSettings() {
-            API_BASE = document.getElementById('client_api_base').value;
-            STATIONS_URL = document.getElementById('client_stations_url').value;
-            localStorage.setItem('api_base', API_BASE);
-            localStorage.setItem('stations_url', STATIONS_URL);
-            showMessage('Client settings saved', 'success');
-            fetchAvailableStations();
-            updateUI();
-        }
-
-        let metricsHistory = { labels: [], fetched: [], failed: [] };
-        let metricsChart = null;
-        let allStations = [];
-        let monitoredStations = [];
-        let lastKnownRunning = null;
-        let isSelectionMode = false;
-        let map;
-        let selectionStart = null;
-        let selectionRect = null;
-
-        function initMap() {
-            map = new maplibregl.Map({
-                container: 'map',
-                style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // Basic style
-                center: [-98.5795, 39.8283], // Center of USA
-                zoom: 3
-            });
-
-            map.on('load', () => {
-                map.addSource('stations', {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: []
-                    }
-                });
-
-                map.addLayer({
-                    id: 'stations-layer',
-                    type: 'circle',
-                    source: 'stations',
-                    paint: {
-                        'circle-radius': 6,
-                        'circle-color': [
-                            'case',
-                            ['get', 'monitored'],
-                            '#004E01', // Monitored: Green
-                            '#D40000'  // Available: Red
-                        ],
-                        'circle-stroke-width': 2,
-                        'circle-stroke-color': '#818181'
-                    }
-                });
-
-                // Tooltip on hover
-                const popup = new maplibregl.Popup({
-                    closeButton: false,
-                    closeOnClick: false
-                });
-
-                map.on('mouseenter', 'stations-layer', (e) => {
-                    map.getCanvas().style.cursor = 'pointer';
-                    const coordinates = e.features[0].geometry.coordinates.slice();
-                    const { code, name, monitored } = e.features[0].properties;
-                    const description = `<strong>${code}</strong><br>${name}<br>${monitored ? 'Monitored' : 'Available'}`;
-
-                    popup.setLngLat(coordinates).setHTML(description).addTo(map);
-                });
-
-                map.on('mouseleave', 'stations-layer', () => {
-                    map.getCanvas().style.cursor = '';
-                    popup.remove();
-                });
-
-                // Click to add/remove
-                map.on('click', 'stations-layer', (e) => {
-                    if (isSelectionMode) return;
-                    const { code, monitored } = e.features[0].properties;
-                    if (monitored) {
-                        removeStation(code);
-                    } else {
-                        addStationToFetcher(code);
-                    }
-                });
-
-                // Selection rectangle handlers
-                map.on('mousedown', (e) => {
-                    if (!isSelectionMode) return;
-                    
-                    // Prevent default to avoid map interaction
-                    e.originalEvent.preventDefault();
-                    
-                    if (selectionRect) selectionRect.remove();
-                    
-                    selectionStart = e.point;
-                    selectionRect = document.createElement('div');
-                    selectionRect.className = 'selection-rect';
-                    map.getCanvasContainer().appendChild(selectionRect);
-                });
-
-                map.on('mousemove', (e) => {
-                    if (!isSelectionMode || !selectionStart || !selectionRect) return;
-
-                    const current = e.point;
-                    const left = Math.min(selectionStart.x, current.x);
-                    const top = Math.min(selectionStart.y, current.y);
-                    const width = Math.abs(selectionStart.x - current.x);
-                    const height = Math.abs(selectionStart.y - current.y);
-
-                    selectionRect.style.left = left + 'px';
-                    selectionRect.style.top = top + 'px';
-                    selectionRect.style.width = width + 'px';
-                    selectionRect.style.height = height + 'px';
-                });
-
-                map.on('mouseup', (e) => {
-                    if (!isSelectionMode || !selectionStart) return;
-
-                    const selectionEnd = e.point;
-                    
-                    if (selectionRect) {
-                        selectionRect.remove();
-                        selectionRect = null;
-                    }
-                    
-                    const p1 = selectionStart;
-                    const p2 = selectionEnd;
-                    selectionStart = null;
-
-                    // Calculate which stations are in the bounding box
-                    if (Math.abs(p1.x - p2.x) > 5 || Math.abs(p1.y - p2.y) > 5) {
-                        const sw = map.unproject([Math.min(p1.x, p2.x), Math.max(p1.y, p2.y)]);
-                        const ne = map.unproject([Math.max(p1.x, p2.x), Math.min(p1.y, p2.y)]);
-                        
-                        const minLng = sw.lng;
-                        const maxLng = ne.lng;
-                        const minLat = sw.lat;
-                        const maxLat = ne.lat;
-
-                        const stationsToAdd = allStations.filter(s => 
-                            s.lon >= minLng && s.lon <= maxLng && 
-                            s.lat >= minLat && s.lat <= maxLat &&
-                            !monitoredStations.some(ms => ms.name === s.code)
-                        );
-
-                        if (stationsToAdd.length > 0) {
-                            console.log(`Adding ${stationsToAdd.length} stations from region selection`);
-                            
-                            (async () => {
-                                for (const s of stationsToAdd) {
-                                    await addStationToFetcher(s.code, true);
-                                }
-                                updateUI();
-                                showMessage(`Added ${stationsToAdd.length} stations from selection`, 'success');
-                            })();
-                        }
-                    }
-                });
-
-                updateMapMarkers();
-            });
-        }
-
-        function updateMapMarkers() {
-            if (!map || !map.getSource('stations')) return;
-
-            const features = allStations.map(s => {
-                const isMonitored = monitoredStations.some(ms => ms.name === s.code);
-                return {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [s.lon, s.lat]
-                    },
-                    properties: {
-                        code: s.code,
-                        name: s.name,
-                        monitored: isMonitored
-                    }
-                };
-            });
-
-            map.getSource('stations').setData({
-                type: 'FeatureCollection',
-                features: features
-            });
-        }
-
-        function toggleSelectionMode() {
-            isSelectionMode = !isSelectionMode;
-            const btn = document.getElementById('selectionModeBtn');
-            btn.classList.toggle('active', isSelectionMode);
-            btn.textContent = `Selection Mode: ${isSelectionMode ? 'ON' : 'OFF'}`;
-            
-            if (map) {
-                if (isSelectionMode) {
-                    map.dragPan.disable();
-                    map.dragRotate.disable();
-                    map.scrollZoom.disable();
-                    map.touchZoomRotate.disable();
-                    map.boxZoom.disable();
-                    map.doubleClickZoom.disable();
-                    map.getCanvas().style.cursor = 'crosshair';
-                } else {
-                    map.dragPan.enable();
-                    map.dragRotate.enable();
-                    map.scrollZoom.enable();
-                    map.touchZoomRotate.enable();
-                    map.boxZoom.enable();
-                    map.doubleClickZoom.enable();
-                    map.getCanvas().style.cursor = '';
-                }
-            }
-            console.log(`Selection mode: ${isSelectionMode}`);
-        }
-        
-        async function fetchAvailableStations() {
-            const status = document.getElementById('stationLoadStatus');
-            try {
-                console.log(`📡 Loading stations from ${STATIONS_URL}...`);
-                const response = await fetch(STATIONS_URL);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                const stations = data.stations || [];
-                if (!stations.length) {
-                    throw new Error('No stations in response');
-                }
-                allStations = stations.filter(s => s.code && s.name).sort((a, b) => a.code.localeCompare(b.code));
-                status.textContent = `✓ Loaded ${allStations.length} stations`;
-                status.style.color = '#4CAF50';
-            } catch (error) {
-                console.error('❌ Failed to load stations:', error);
-                // Try fallback if STATIONS_URL is not the default relative one
-                if (STATIONS_URL !== 'data/stations.json') {
-                    console.log('Trying fallback data/stations.json...');
-                    try {
-                        const fallbackResponse = await fetch('data/stations.json');
-                        if (fallbackResponse.ok) {
-                            const data = await fallbackResponse.json();
-                            allStations = data.stations.filter(s => s.code && s.name).sort((a, b) => a.code.localeCompare(b.code));
-                            status.textContent = `⚠ Loaded ${allStations.length} from local fallback`;
-                            status.style.color = '#ff9800';
-                            updateStationSelector();
-                            updateMapMarkers();
-                            return;
-                        }
-                    } catch (e) {}
-                }
-                allStations = [
-                    { code: 'KTLX', name: 'Oklahoma City, OK', lat: 35.333, lon: -97.278 },
-                    { code: 'KCRP', name: 'Corpus Christi, TX', lat: 27.784, lon: -97.511 },
-                    { code: 'KEWX', name: 'Austin/San Antonio, TX', lat: 29.704, lon: -98.029 },
-                    { code: 'KAMA', name: 'Amarillo, TX', lat: 35.233, lon: -101.709 },
-                    { code: 'KDVN', name: 'Davenport, IA', lat: 41.612, lon: -90.581 },
-                    { code: 'KOUN', name: 'Norman, OK', lat: 35.236, lon: -97.462 },
-                    { code: 'KBRO', name: 'Brownsville, TX', lat: 25.916, lon: -97.419 }
-                ].sort((a, b) => a.code.localeCompare(b.code));
-                status.textContent = '⚠ Using built-in station list';
-                status.style.color = '#ff9800';
-            }
-            updateStationSelector();
-            updateMapMarkers();
-        }
-        
-        function updateStationSelector(filter = "") {
-            const select = document.getElementById('availableStations');
-            const selectedStations = Array.from(
-                document.querySelectorAll('.station-badge')
-            ).map(b => b.firstChild.textContent.split(' ')[0].trim()); // Extract code from badge
-            const available = allStations
-                .filter(s => !selectedStations.includes(s.code))
-                .filter(s => 
-                    s.code.toUpperCase().includes(filter.toUpperCase()) || 
-                    s.name.toUpperCase().includes(filter.toUpperCase())
-                );
-            if (!available.length) {
-                select.innerHTML = `<option disabled selected>No available stations</option>`;
-                return;
-            }
-            select.innerHTML = available
-                .map(s => `<option value="${s.code}">${s.code} - ${s.name}</option>`)
-                .join('');
-        }
-        
-        async function addSelectedStation() {
-            const station = document.getElementById('availableStations').value;
-            if (!station) return;
-            await addStationToFetcher(station);
-        }
-        
-        async function addStationToFetcher(station, skipUpdate = false) {
-            try {
-                const response = await fetch(`${API_BASE}/api/stations`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: station })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    //showMessage(`Added ${station}`, 'success');
-                    if (!skipUpdate) updateUI();
-                } else {
-                    showMessage('Error: ' + (result.error || 'Unknown error'), 'error');
-                }
-            } catch (error) {
-                showMessage('Network error: ' + error.message, 'error');
-            }
-        }
-        
-        async function removeStation(name) {
-            try {
-                const response = await fetch(`${API_BASE}/api/stations/${name}`, { method: 'DELETE' });
-                const result = await response.json();
-                if (result.success) {
-                    showMessage(`Removed ${name}`, 'success');
-                    updateUI();
-                } else {
-                    showMessage('Error: ' + (result.error || 'Unknown error'), 'error');
-                }
-            } catch (error) {
-                showMessage('Network error: ' + error.message, 'error');
-            }
-        }
-        
-        async function togglePause() {
-            const isRunning = lastKnownRunning;
-            const btn = document.getElementById('pauseBtn');
-            btn.disabled = true;
-            
-            try {
-                const endpoint = isRunning ? '/api/pause' : '/api/resume';
-                const response = await fetch(`${API_BASE}${endpoint}`, { method: 'POST' });
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage(isRunning ? 'System paused' : 'System resumed', 'success');
-                    updateUI();
-                } else {
-                    showMessage('Error: ' + (result.error || 'Unknown error'), 'error');
-                }
-            } catch (error) {
-                showMessage('Network error: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        async function fetchConfig() {
-            try {
-                const response = await fetch(`${API_BASE}/api/config`);
-                const config = await response.json();
-                
-                document.getElementById('auto_cleanup_enabled').checked = config.auto_cleanup_enabled;
-                document.getElementById('buffer_pool_size').value = config.buffer_pool_size;
-                document.getElementById('buffer_size_mb').value = config.buffer_size_mb;
-                document.getElementById('cleanup_interval_seconds').value = config.cleanup_interval_seconds;
-                document.getElementById('fetcher_thread_pool_size').value = config.fetcher_thread_pool_size;
-                document.getElementById('max_frames_per_station').value = config.max_frames_per_station;
-                document.getElementById('scan_interval_seconds').value = config.scan_interval_seconds;
-            } catch (error) {
-                console.error('Failed to fetch config:', error);
-            }
-        }
-        
-        async function updateConfig() {
-            const config = {
-                auto_cleanup_enabled: document.getElementById('auto_cleanup_enabled').checked,
-                buffer_pool_size: parseInt(document.getElementById('buffer_pool_size').value),
-                buffer_size_mb: parseInt(document.getElementById('buffer_size_mb').value),
-                cleanup_interval_seconds: parseInt(document.getElementById('cleanup_interval_seconds').value),
-                fetcher_thread_pool_size: parseInt(document.getElementById('fetcher_thread_pool_size').value),
-                max_frames_per_station: parseInt(document.getElementById('max_frames_per_station').value),
-                scan_interval_seconds: parseInt(document.getElementById('scan_interval_seconds').value)
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/config`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    showMessage('Configuration updated', 'success');
-                } else {
-                    showMessage('Error updating configuration', 'error');
-                }
-            } catch (error) {
-                showMessage('Network error: ' + error.message, 'error');
-            }
-        }
-        
-        async function updateUI() {
-            try {
-                const [stations, metrics, status] = await Promise.all([
-                    fetch(`${API_BASE}/api/stations`).then(r => {
-                        if (!r.ok) throw new Error(`Stations: ${r.status}`);
-                        return r.json();
-                    }),
-                    fetch(`${API_BASE}/api/metrics`).then(r => {
-                        if (!r.ok) throw new Error(`Metrics: ${r.status}`);
-                        return r.json();
-                    }),
-                    fetch(`${API_BASE}/api/status`).then(r => {
-                        if (!r.ok) throw new Error(`Status: ${r.status}`);
-                        return r.json();
-                    })
-                ]);
-                updateStations(stations);
-                updateMetrics(metrics);
-                updateStatus(status);
-                updateChart(metrics);
-                
-                document.getElementById('statusDot').style.opacity = '1';
-                if (!status.fetcher_running) {
-                    document.getElementById('statusText').textContent = 'Paused';
-                }
-            } catch (error) { 
-                console.error('Update error:', error);
-                document.getElementById('statusDot').classList.remove('running');
-                document.getElementById('statusDot').style.opacity = '0.5';
-                document.getElementById('statusText').textContent = 'Disconnected';
-                document.getElementById('fetcherState').textContent = '● Offline';
-                document.getElementById('fetcherState').style.color = '#f44336';
-            }
-        }
-        
-        function updateStations(stations) {
-            monitoredStations = stations;
-            const badges = document.getElementById('stationBadges');
-            badges.innerHTML = stations.length > 0 
-                ? stations.map(s => {
-                    const fullStation = allStations.find(as => as.code === s.name);
-                    const displayName = fullStation ? `${fullStation.code} - ${fullStation.name}` : s.name;
-                    return `<div class="station-badge">${displayName} <span class="remove" onclick="removeStation('${s.name}')">×</span></div>`;
-                }).join('')
-                : '<div class="empty-state">No stations selected</div>';
-            updateStationSelector(document.getElementById('stationSearch').value);
-            updateMapMarkers();
-        }
-        
-        function updateMetrics(metrics) {
-            const fetched = metrics.frames_fetched || 0;
-            const failed = metrics.frames_failed || 0;
-            const total = fetched + failed;
-            const uptime = metrics.uptime_seconds || 0;
-            
-            document.getElementById('framesFetched').textContent = fetched;
-            document.getElementById('framesFailed').textContent = failed;
-            document.getElementById('uptime').textContent = formatTime(uptime);
-            
-            const successRate = total > 0 ? ((fetched / total) * 100).toFixed(1) : 'N/A';
-            document.getElementById('successRate').textContent = successRate !== 'N/A' ? successRate + '%' : 'N/A';
-            
-            const throughput = uptime > 0 ? (fetched / (uptime / 60)).toFixed(1) : 0;
-            document.getElementById('throughput').textContent = throughput + ' fps';
-            
-            metricsHistory.labels.push(new Date().toLocaleTimeString());
-            metricsHistory.fetched.push(fetched);
-            metricsHistory.failed.push(failed);
-            if (metricsHistory.labels.length > 12) {
-                metricsHistory.labels.shift();
-                metricsHistory.fetched.shift();
-                metricsHistory.failed.shift();
-            }
-        }
-        
-        function updateStatus(status) {
-            const isRunning = status.fetcher_running;
-            lastKnownRunning = isRunning;
-            
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-            const btn = document.getElementById('pauseBtn');
-            const state = document.getElementById('pauseState');
-            const fetcherStateEl = document.getElementById('fetcherState');
-            
-            fetcherStateEl.style.color = ''; // Reset color
-            
-            if (isRunning) {
-                dot.classList.add('running');
-                text.textContent = 'Running';
-                btn.className = 'control-btn running';
-                btn.querySelector('span').textContent = 'RUNNING';
-                state.textContent = 'Active';
-                fetcherStateEl.textContent = '● Running';
-            } else {
-                dot.classList.remove('running');
-                text.textContent = 'Paused';
-                btn.className = 'control-btn paused';
-                btn.querySelector('span').textContent = 'PAUSED';
-                state.textContent = 'Ready';
-                fetcherStateEl.textContent = '● Paused';
-            }
-        }
-        
-        function updateChart(metrics) {
-            const ctx = document.getElementById('metricsChart');
-            if (!ctx) return;
-            
-            if (metricsChart) {
-                metricsChart.destroy();
-            }
-            
-            metricsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: metricsHistory.labels,
-                    datasets: [
-                        {
-                            label: 'Fetched',
-                            data: metricsHistory.fetched,
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Failed',
-                            data: metricsHistory.failed,
-                            borderColor: '#f44336',
-                            backgroundColor: 'rgba(244, 67, 54, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#e0e0e0' } }
-                    },
-                    scales: {
-                        y: { ticks: { color: '#888' }, grid: { color: '#2a2a2a' } },
-                        x: { ticks: { color: '#888' }, grid: { color: '#2a2a2a' } }
-                    }
-                }
-            });
-        }
-        
-        function formatTime(seconds) {
-            if (seconds < 60) return seconds + 's';
-            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
-            return Math.floor(seconds / 3600) + 'h';
-        }
-        
-        function showMessage(message, type) {
-            const div = document.getElementById('message');
-            div.innerHTML = `<div class="message ${type}">${message}</div>`;
-            setTimeout(() => { div.innerHTML = ''; }, 3000);
-        }
-        
-        fetchAvailableStations();
-        fetchConfig();
-        updateUI();
-        initMap();
-        setInterval(updateUI, 5000);
-    </script>
+    <script src="js/renderer.js"></script>
 </body>
 </html>
