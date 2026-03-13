@@ -799,7 +799,7 @@
                     labels: metricsHistory.labels,
                     datasets: [
                         {
-                            label: 'Fetched',
+                            label: 'Processed',
                             data: metricsHistory.fetched,
                             borderColor: '#4CAF50',
                             backgroundColor: 'rgba(76, 175, 80, 0.1)',
